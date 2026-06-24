@@ -1,0 +1,674 @@
+
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KERIPIK KITA - Keripik Premium 21+</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome untuk Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .font-handwritten {
+            font-family: 'Caveat', cursive;
+        }
+        .blur-bg {
+            backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="bg-[#FDFBF7] text-slate-800 overflow-x-hidden">
+
+    <!-- OVERLAY VERIFIKASI USIA (MANDATORY 21+) -->
+    <div id="age-verification" class="fixed inset-0 z-50 bg-slate-900 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-8 text-center shadow-2xl border-4 border-amber-600 transform transition-all duration-500 scale-100">
+            <div class="w-24 h-24 rounded-full overflow-hidden mx-auto mb-6 shadow-md border-2 border-amber-500">
+                <img src="i3.webp" alt="Logo Keripik Kita" class="w-full h-full object-cover">
+            </div>
+            <h1 class="text-3xl font-extrabold text-slate-900 mb-1">KERIPIK KITA</h1>
+            <p class="text-red-600 font-bold tracking-wider text-xs uppercase mb-6">Peringatan: Khusus Usia 21+</p>
+            
+            <p class="text-slate-600 text-sm mb-8">
+                Situs web ini menyediakan produk camilan yang ditujukan hanya untuk konsumen berusia <strong class="text-slate-900">21 tahun ke atas</strong>.
+            </p>
+
+            <div class="flex flex-col gap-3">
+                <button onclick="verifyAge(true)" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition duration-300 shadow-md">
+                    Saya berusia 21 Tahun atau Lebih
+                </button>
+                <button onclick="verifyAge(false)" class="w-full py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-xl transition duration-300">
+                    Saya di bawah 21 tahun
+                </button>
+            </div>
+            
+            <p class="text-sm text-amber-600 mt-6 font-handwritten text-lg">
+                "Sekali gigit Sikekk Aeyaaaa....."
+            </p>
+        </div>
+    </div>
+
+    <!-- ERROR SCREEN (JIKA DI BAWAH 21 TAHUN) -->
+    <div id="age-denied" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center p-4 hidden">
+        <div class="text-center max-w-md">
+            <div class="text-red-500 text-7xl mb-6 animate-pulse">
+                <i class="fa-solid fa-ban"></i>
+            </div>
+            <h2 class="text-3xl font-extrabold text-white mb-4">Akses Ditolak!</h2>
+            <p class="text-slate-400 mb-6">Maaf, Anda harus berusia minimal 21 tahun untuk dapat menjelajahi dan memesan menu legendaris KERIPIK KITA.</p>
+            <div class="p-4 bg-slate-900 rounded-lg border border-slate-800">
+                <p class="text-amber-500 italic font-medium text-xs">"Setiap ada usaha pasti ada jalannya"</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP WRAPPER (HIDDEN UNTIL VERIFIED) -->
+    <div id="main-content" class="opacity-0 transition-opacity duration-700 pointer-events-none">
+        
+        <!-- HEADER / NAVIGATION -->
+        <header class="sticky top-0 z-40 bg-white/90 blur-bg border-b border-amber-100 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3">
+                    <img src="i3.webp" alt="Logo" class="w-12 h-12 rounded-full border-2 border-amber-500 object-cover">
+                    <div class="flex flex-col">
+                        <span class="text-xl font-black text-slate-900 tracking-wider leading-none">KERIPIK<span class="text-amber-600">KITA</span></span>
+                        <span class="text-[9px] bg-red-600 text-white font-extrabold px-1.5 py-0.5 rounded mt-1 self-start">21+ ONLY</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center gap-8 font-medium text-slate-600">
+                    <a href="#beranda" class="hover:text-amber-600 transition">Beranda</a>
+                    <a href="#tentang" class="hover:text-amber-600 transition">Tentang Kami</a>
+                    <a href="#produk" class="hover:text-amber-600 transition">Menu Pilihan</a>
+                    <a href="#testimoni" class="hover:text-amber-600 transition">Testimoni</a>
+                </nav>
+
+                <!-- Cart Button & CTA -->
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleCart()" class="relative p-2.5 bg-amber-100 text-amber-900 rounded-full hover:bg-amber-200 transition">
+                        <i class="fa-solid fa-basket-shopping text-lg"></i>
+                        <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+                    </button>
+                    <a href="#produk" class="hidden sm:inline-block px-5 py-2.5 bg-amber-600 text-white font-bold rounded-full text-sm hover:bg-amber-700 transition">
+                        Pesan Sekarang
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- HERO SECTION -->
+        <section id="beranda" class="relative overflow-hidden pt-12 pb-20 md:py-24 bg-gradient-to-b from-amber-100/30 to-[#FDFBF7]">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <!-- Left Text -->
+                <div class="text-center lg:text-left space-y-6">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-red-100 text-red-700 rounded-full text-xs font-bold uppercase tracking-wider">
+                        <i class="fa-solid fa-circle-exclamation animate-pulse"></i> KHUSUS USIA 21 TAHUN KE ATAS
+                    </div>
+                    <h2 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-905 leading-tight">
+                        Cita Rasa Khas<br />
+                        <span class="text-amber-600">KERIPIK KITA</span>
+                    </h2>
+                    <p class="text-slate-600 text-base sm:text-lg max-w-lg mx-auto lg:mx-0">
+                        Camilan eksklusif dengan kemasan pouch standar dan stiker merek premium. Dibuat khusus untuk Anda yang mendambakan kebersamaan sejati dan kelezatan tiada tanding.
+                    </p>
+                    
+                    <!-- Moto Highlight -->
+                    <div class="p-5 bg-white rounded-2xl border-l-4 border-amber-600 shadow-md inline-block text-left max-w-md mx-auto lg:mx-0">
+                        <p class="text-sm font-semibold text-slate-700 italic">"Setiap ada usaha pasti ada jalannya"</p>
+                        <p class="text-amber-600 font-handwritten text-lg mt-1 text-right">"Sekali gigit Sikekk Aeyaaaa....."</p>
+                    </div>
+
+                    <div class="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="#produk" class="w-full sm:w-auto text-center px-8 py-4 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition duration-300 shadow-lg shadow-amber-600/20">
+                            Pesan Menu Sekarang
+                        </a>
+                        <a href="#tentang" class="w-full sm:w-auto text-center px-8 py-4 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 transition">
+                            Pelajari Selengkapnya
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Visual -->
+                <div class="relative flex justify-center">
+                    <div class="absolute -inset-4 bg-amber-400/20 rounded-full blur-3xl -z-10 animate-pulse"></div>
+                    <div class="relative bg-white p-4 rounded-3xl shadow-2xl border border-amber-100 max-w-md w-full overflow-hidden group">
+                        <img src="i3.webp" alt="Logo Keripik Kita" class="w-full h-auto rounded-2xl object-cover transition duration-500 group-hover:scale-105">
+                        <div class="p-4 text-center">
+                            <span class="font-bold text-slate-900 text-lg">Official Logo Brand KERIPIK KITA</span>
+                            <p class="text-xs text-amber-600 font-semibold mt-1">Kebersamaan & Kehangatan dalam Setiap Gigitan</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TENTANG KAMI -->
+        <section id="tentang" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                    <h3 class="text-amber-600 font-bold uppercase tracking-wider text-sm">FILOSOFI KAMI</h3>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">Kemasan Eksklusif & Kualitas Terjamin</h2>
+                    <p class="text-slate-600">
+                        Kami menghadirkan camilan renyah bermutu tinggi dengan kemasan standing pouch tebal ber-seal rapat serta ditempeli stiker merek asli kami yang berkelas. Aman, kedap udara, dan siap dinikmati kapan saja.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Feature 1 -->
+                    <div class="p-8 bg-[#FDFBF7] rounded-2xl border border-amber-100 text-center space-y-4 shadow-sm">
+                        <div class="w-16 h-16 bg-amber-600 text-white rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-lg shadow-amber-600/20">
+                            <i class="fa-solid fa-box-open"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900">Packaging Pouch + Sticker</h4>
+                        <p class="text-slate-600 text-sm">
+                            Kemasan praktis ramah lingkungan dengan zip-lock pengaman dan label stiker khas kami yang estetik.
+                        </p>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="p-8 bg-[#FDFBF7] rounded-2xl border border-amber-100 text-center space-y-4 shadow-sm">
+                        <div class="w-16 h-16 bg-red-600 text-white rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-lg shadow-red-600/20">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900">Batasan Usia 21+</h4>
+                        <p class="text-slate-600 text-sm">
+                            Produk ini diformulasikan khusus untuk kedewasaan cita rasa yang dinikmati oleh konsumen berusia 21 tahun ke atas.
+                        </p>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="p-8 bg-[#FDFBF7] rounded-2xl border border-amber-100 text-center space-y-4 shadow-sm">
+                        <div class="w-16 h-16 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-lg shadow-slate-900/20">
+                            <i class="fa-solid fa-road"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900">Semangat Usaha</h4>
+                        <p class="text-slate-600 text-sm">
+                            Memegang teguh komitmen kerja keras: "Setiap ada usaha pasti ada jalannya". Kami yakin kualitas rasa kami membuktikannya.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRODUK SECTION (MENU DENGAN ASSET GAMBAR ASLI) -->
+        <section id="produk" class="py-20 bg-amber-50/40">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
+                    <h3 class="text-amber-600 font-bold uppercase tracking-wider text-sm">MENU PILIHAN ANDALAN</h3>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">Pilih Varian KERIPIK KITA</h2>
+                    <p class="text-slate-600">Semua produk seharga Rp 15.000 dengan cita rasa legendaris.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-4xl mx-auto">
+                    
+                    <!-- MENU 1: PISANG COKLAT (Senyuman Kita) -->
+                    <div class="bg-white rounded-3xl overflow-hidden shadow-xl border border-amber-100 hover:shadow-2xl transition-all duration-300 flex flex-col justify-between">
+                        <div>
+                            <!-- Real Image Mockup -->
+                            <div class="relative aspect-square overflow-hidden bg-slate-150">
+                                <span class="absolute top-4 left-4 bg-amber-600 text-white font-extrabold text-xs px-3 py-1 rounded-full shadow-md z-10">SENYUMAN KITA</span>
+                                <span class="absolute top-4 right-4 bg-red-600 text-white font-bold text-[10px] px-2.5 py-1 rounded-md z-10">21+ ONLY</span>
+                                <img src="i2.webp" alt="Pisang Coklat KERIPIK KITA" class="w-full h-full object-cover">
+                            </div>
+
+                            <div class="p-8 space-y-4">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="text-2xl font-black text-slate-950">Senyuman Kita</h3>
+                                        <p class="text-amber-600 font-bold text-sm">Pisang Coklat Premium</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-2xl font-black text-slate-900">Rp 15.000</span>
+                                        <p class="text-xs text-slate-400">/ Pouch + Stiker</p>
+                                    </div>
+                                </div>
+                                <p class="text-slate-600 text-sm">
+                                    Keripik pisang renyah berlumur bubuk cokelat premium yang tebal dan melimpah. Manisnya pas, renyahnya asyik, dijamin membuat siapa saja tersenyum lebar setelah mencobanya.
+                                </p>
+                                <div class="border-t border-slate-100 pt-4 flex flex-wrap gap-2">
+                                    <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-1 rounded-md">Cokelat Tebal</span>
+                                    <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-1 rounded-md">Pisang Pilihan</span>
+                                    <span class="bg-slate-100 text-slate-800 text-xs font-semibold px-2.5 py-1 rounded-md">Pouch Standar + Sticker</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-8 pt-0">
+                            <button onclick="addToCart('p1', 'Senyuman Kita (Pisang Coklat)', 15000, 'Pisang Coklat')" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition duration-300 flex items-center justify-center gap-2 shadow-md">
+                                <i class="fa-solid fa-cart-plus"></i> Tambah Ke Keranjang
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- MENU 2: KERIPIK UBI KITA / UBI PEDAS (Marah Kita) -->
+                    <div class="bg-white rounded-3xl overflow-hidden shadow-xl border border-amber-100 hover:shadow-2xl transition-all duration-300 flex flex-col justify-between">
+                        <div>
+                            <!-- Real Image Mockup -->
+                            <div class="relative aspect-square overflow-hidden bg-slate-150">
+                                <span class="absolute top-4 left-4 bg-red-600 text-white font-extrabold text-xs px-3 py-1 rounded-full shadow-md z-10">MARAH KITA</span>
+                                <span class="absolute top-4 right-4 bg-red-600 text-white font-bold text-[10px] px-2.5 py-1 rounded-md z-10">21+ ONLY</span>
+                                <img src="i1.webp" alt="Keripik Ubi Pedas KERIPIK KITA" class="w-full h-full object-cover">
+                            </div>
+
+                            <div class="p-8 space-y-4">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="text-2xl font-black text-slate-950">Marah Kita</h3>
+                                        <p class="text-red-600 font-bold text-sm">Keripik Ubi Pedas</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-2xl font-black text-slate-900">Rp 15.000</span>
+                                        <p class="text-xs text-slate-400">/ Pouch + Stiker</p>
+                                    </div>
+                                </div>
+                                <p class="text-slate-600 text-sm">
+                                    Olahan keripik ubi jalar renyah yang dibalut dengan bumbu pedas manis daun jeruk melimpah. Pedasnya berani dan menantang emosimu! Hanya direkomendasikan untuk pecinta sensasi ekstrem.
+                                </p>
+                                <div class="border-t border-slate-100 pt-4 flex flex-wrap gap-2">
+                                    <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-1 rounded-md">Pedas Mantap</span>
+                                    <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-1 rounded-md">Ubi Gurih</span>
+                                    <span class="bg-slate-100 text-slate-800 text-xs font-semibold px-2.5 py-1 rounded-md">Pouch Standar + Sticker</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-8 pt-0">
+                            <button onclick="addToCart('p2', 'Marah Kita (Keripik Ubi Pedas)', 15000, 'Ubi Pedas')" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition duration-300 flex items-center justify-center gap-2 shadow-md">
+                                <i class="fa-solid fa-fire"></i> Tambah Ke Keranjang
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTIMONI & MOTO SECTION -->
+        <section id="testimoni" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
+                    <h3 class="text-amber-600 font-bold uppercase tracking-wider text-sm">KOMENTAR PELANGGAN</h3>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">Ulasan Lidah Tangguh</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Card 1 -->
+                    <div class="p-8 bg-amber-50/50 rounded-2xl border border-amber-100 space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-amber-200 rounded-full flex items-center justify-center font-bold text-lg text-amber-950">
+                                RG
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Rangga</h4>
+                                <p class="text-xs text-slate-400">Pecinta Snack (22th)</p>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 text-sm italic">
+                            "Kemasan standing pouchnya kuat banget, stiker logonya estetik dengan gambar 5 orang sahabat itu, persis kayak geng kita pas lagi nongkrong sambil nyemil Pisang Coklat 'Senyuman Kita'. Sekali gigit Sikekk Aeyaaaa.....!"
+                        </p>
+                        <div class="text-amber-400 flex gap-1">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="p-8 bg-amber-50/50 rounded-2xl border border-amber-100 space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-pink-200 rounded-full flex items-center justify-center font-bold text-lg text-pink-950">
+                                FT
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Fitri</h4>
+                                <p class="text-xs text-slate-400">Penyuka Pedas (25th)</p>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 text-sm italic">
+                            "Ubi Pedas 'Marah Kita' rasanya bener-bener berani. Garingnya pas, pedasnya gurih nikmat. Sangat memuaskan. Sesuai motonya, emang kalau ada usaha nyari camilan pedas enak, pasti ketemu jalannya di sini."
+                        </p>
+                        <div class="text-amber-400 flex gap-1">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="p-8 bg-amber-50/50 rounded-2xl border border-amber-100 space-y-6 md:col-span-2 lg:col-span-1">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-slate-300 rounded-full flex items-center justify-center font-bold text-lg text-slate-950">
+                                DN
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Doni</h4>
+                                <p class="text-xs text-slate-400">Pecinta Ubi (29th)</p>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 text-sm italic">
+                            "Kemasan pouch higienis, stiker mereknya rapi banget nempel di kemasan depan. Pas buat hadiah atau oleh-oleh ke temen tongkrongan."
+                        </p>
+                        <div class="text-amber-400 flex gap-1">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BIG MOTO BANNER -->
+                <div class="mt-20 bg-slate-900 rounded-3xl p-8 sm:p-12 text-center text-white relative overflow-hidden">
+                    <div class="absolute -top-10 -left-10 w-40 h-40 bg-amber-500/20 rounded-full blur-2xl"></div>
+                    <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-red-500/20 rounded-full blur-2xl"></div>
+                    
+                    <span class="text-amber-500 font-extrabold text-sm uppercase tracking-widest block mb-4">MOTO KAMI</span>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold max-w-3xl mx-auto leading-relaxed mb-6">
+                        "setiap ada usaha pasti ada jalannya"
+                    </h2>
+                    <p class="font-handwritten text-amber-500 text-3xl tracking-wider">
+                        "Sekali gigit Sikekk Aeyaaaa....."
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FLOATING SIDE CART (PANEL) -->
+        <div id="cart-drawer" class="fixed inset-y-0 right-0 z-50 w-full sm:w-96 bg-white shadow-2xl border-l border-amber-100 flex flex-col justify-between transform translate-x-full transition-transform duration-300">
+            <!-- Cart Header -->
+            <div class="p-6 border-b border-amber-100 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-basket-shopping text-xl text-amber-600"></i>
+                    <h3 class="text-lg font-black text-slate-900">Keranjang Belanja</h3>
+                </div>
+                <button onclick="toggleCart()" class="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Cart Items List -->
+            <div id="cart-items" class="p-6 overflow-y-auto flex-1 space-y-4">
+                <!-- Dynamic Items Inserted Here -->
+                <div class="text-center text-slate-400 py-12" id="empty-cart-msg">
+                    <i class="fa-solid fa-cookie-bite text-5xl mb-4 text-amber-200"></i>
+                    <p>Keranjang masih kosong.</p>
+                    <p class="text-xs">Yuk, pilih varian KERIPIK KITA favoritmu!</p>
+                </div>
+            </div>
+
+            <!-- Cart Footer -->
+            <div class="p-6 border-t border-amber-100 bg-amber-50/50 space-y-4">
+                <!-- Total -->
+                <div class="flex items-center justify-between text-slate-900 font-bold">
+                    <span>Total Pembayaran:</span>
+                    <span id="cart-total" class="text-xl text-amber-600">Rp 0</span>
+                </div>
+                
+                <!-- Order Form Details inside Cart for Ease of Checkout -->
+                <div class="space-y-3">
+                    <input type="text" id="cust-name" placeholder="Nama Penerima" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-amber-500" required>
+                    <textarea id="cust-address" placeholder="Alamat Lengkap Pengiriman" rows="2" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-amber-500" required></textarea>
+                </div>
+
+                <!-- CTA Order via WA -->
+                <button onclick="checkoutToWA()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition duration-300 flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/15">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Kirim Pesanan via WhatsApp
+                </button>
+                <p class="text-[10px] text-center text-slate-400">Verifikasi usia 21+ akan dicek kembali saat pengiriman barang.</p>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="bg-slate-950 text-white pt-16 pb-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 border-b border-slate-900 pb-12">
+                <!-- Branding info -->
+                <div class="md:col-span-2 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <img src="i3.webp" alt="Logo" class="w-10 h-10 rounded-full object-cover">
+                        <span class="text-2xl font-black text-white tracking-wider">KERIPIK<span class="text-amber-500">KITA</span></span>
+                    </div>
+                    <p class="text-slate-400 text-sm max-w-sm">
+                        Produsen camilan ubi dan pisang premium eksklusif dengan standar pengemasan standing pouch kokoh & stiker merek khas KERIPIK KITA.
+                    </p>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-red-950 text-red-400 border border-red-900 rounded-lg text-xs font-bold">
+                        <i class="fa-solid fa-circle-exclamation"></i> Produk Khusus Konsumen Usia 21+ Tahun
+                    </div>
+                </div>
+
+                <!-- Fast Links -->
+                <div>
+                    <h4 class="font-bold text-white mb-4">Navigasi</h4>
+                    <ul class="space-y-2 text-slate-400 text-sm">
+                        <li><a href="#beranda" class="hover:text-amber-500 transition">Beranda</a></li>
+                        <li><a href="#tentang" class="hover:text-amber-500 transition">Tentang Kami</a></li>
+                        <li><a href="#produk" class="hover:text-amber-500 transition">Katalog Menu</a></li>
+                        <li><a href="#testimoni" class="hover:text-amber-500 transition">Testimoni</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact & Slogan -->
+                <div class="space-y-4">
+                    <h4 class="font-bold text-white mb-2">Moto Kami</h4>
+                    <p class="text-sm italic text-amber-500">"Setiap ada usaha pasti ada jalannya"</p>
+                    <p class="font-handwritten text-xl text-slate-300">"Sekali gigit Sikekk Aeyaaaa....."</p>
+                    <div class="flex gap-4 pt-2">
+                        <a href="https://wa.me/6282249409581" target="_blank" class="w-8 h-8 rounded-full bg-slate-900 hover:bg-amber-500 flex items-center justify-center transition"><i class="fa-brands fa-whatsapp text-sm"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Copyright -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+                <p>&copy; 2026 KERIPIK KITA. Hak Cipta Dilindungi.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:underline">Syarat & Ketentuan</a>
+                    <a href="#" class="hover:underline">Kebijakan Privasi</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Cart State
+        let cart = [];
+
+        // Check Age Verification on Load
+        window.onload = function() {
+            const isVerified = localStorage.getItem('age-verified');
+            if (isVerified === 'true') {
+                showMainContent();
+            }
+        }
+
+        // Handle Age Verification Button Press
+        function verifyAge(isOfAge) {
+            const ageOverlay = document.getElementById('age-verification');
+            const ageDenied = document.getElementById('age-denied');
+            
+            if (isOfAge) {
+                localStorage.setItem('age-verified', 'true');
+                ageOverlay.classList.add('hidden');
+                showMainContent();
+            } else {
+                ageOverlay.classList.add('hidden');
+                ageDenied.classList.remove('hidden');
+            }
+        }
+
+        function showMainContent() {
+            document.getElementById('age-verification').classList.add('hidden');
+            const mainContent = document.getElementById('main-content');
+            mainContent.classList.remove('opacity-0', 'pointer-events-none');
+            mainContent.classList.add('opacity-100');
+        }
+
+        // Toggle Cart Sidebar
+        function toggleCart() {
+            const drawer = document.getElementById('cart-drawer');
+            drawer.classList.toggle('translate-x-full');
+        }
+
+        // Add to Cart Function
+        function addToCart(id, name, price, flavor) {
+            const cartItemId = `${id}-${flavor}`;
+            
+            // Check if item already exists
+            const existingItem = cart.find(item => item.cartItemId === cartItemId);
+            
+            if (existingItem) {
+                existingItem.qty += 1;
+            } else {
+                cart.push({
+                    cartItemId: cartItemId,
+                    id: id,
+                    name: name,
+                    flavor: flavor,
+                    price: price,
+                    qty: 1
+                });
+            }
+            
+            updateCartUI();
+            
+            // Auto open cart after adding to make it interactive
+            const drawer = document.getElementById('cart-drawer');
+            if (drawer.classList.contains('translate-x-full')) {
+                drawer.classList.remove('translate-x-full');
+            }
+        }
+
+        // Remove from Cart
+        function removeFromCart(cartItemId) {
+            cart = cart.filter(item => item.cartItemId !== cartItemId);
+            updateCartUI();
+        }
+
+        // Change Item Quantity
+        function updateQty(cartItemId, amount) {
+            const item = cart.find(item => item.cartItemId === cartItemId);
+            if (item) {
+                item.qty += amount;
+                if (item.qty <= 0) {
+                    removeFromCart(cartItemId);
+                    return;
+                }
+            }
+            updateCartUI();
+        }
+
+        // Format Number to Rupiah (IDR)
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(number);
+        }
+
+        // Update Cart Interface
+        function updateCartUI() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const emptyMsg = document.getElementById('empty-cart-msg');
+            const cartCountBadge = document.getElementById('cart-count');
+            const cartTotalText = document.getElementById('cart-total');
+            
+            // Total Item Count
+            const totalQty = cart.reduce((acc, item) => acc + item.qty, 0);
+            cartCountBadge.innerText = totalQty;
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div class="text-center text-slate-400 py-12" id="empty-cart-msg">
+                        <i class="fa-solid fa-cookie-bite text-5xl mb-4 text-amber-200"></i>
+                        <p>Keranjang masih kosong.</p>
+                        <p class="text-xs">Yuk, pilih varian rasa KERIPIK KITA favoritmu!</p>
+                    </div>
+                `;
+                cartTotalText.innerText = formatRupiah(0);
+                return;
+            }
+
+            // Map and render items
+            let itemsHtml = '';
+            let grandTotal = 0;
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.qty;
+                grandTotal += itemTotal;
+
+                itemsHtml += `
+                    <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                        <div class="w-12 h-12 rounded-lg overflow-hidden border border-amber-200">
+                            <img src="${item.id === 'p1' ? '1000479569.jpg' : '1000479570.jpg'}" alt="Thumb" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-bold text-slate-900 truncate">${item.name}</h4>
+                            <p class="text-xs text-amber-600 font-semibold">${item.flavor}</p>
+                            <p class="text-xs text-slate-400">${formatRupiah(item.price)}</p>
+                        </div>
+                        <div class="flex flex-col items-end gap-2">
+                            <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg p-1 text-xs">
+                                <button onclick="updateQty('${item.cartItemId}', -1)" class="w-5 h-5 text-slate-500 hover:bg-slate-100 rounded flex items-center justify-center"><i class="fa-solid fa-minus text-[10px]"></i></button>
+                                <span class="font-bold w-4 text-center">${item.qty}</span>
+                                <button onclick="updateQty('${item.cartItemId}', 1)" class="w-5 h-5 text-slate-500 hover:bg-slate-100 rounded flex items-center justify-center"><i class="fa-solid fa-plus text-[10px]"></i></button>
+                            </div>
+                            <span class="text-xs font-bold text-slate-950">${formatRupiah(itemTotal)}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cartItemsContainer.innerHTML = itemsHtml;
+            cartTotalText.innerText = formatRupiah(grandTotal);
+        }
+
+        // Checkout & Send via WA
+        function checkoutToWA() {
+            const name = document.getElementById('cust-name').value.trim();
+            const address = document.getElementById('cust-address').value.trim();
+
+            if (cart.length === 0) {
+                alert("Masukkan minimal 1 produk keripik ke dalam keranjang terlebih dahulu.");
+                return;
+            }
+
+            if (!name || !address) {
+                alert("Harap isi Nama dan Alamat Lengkap pengiriman terlebih dahulu.");
+                return;
+            }
+
+            // Build Whatsapp Text Message
+            let text = `Halo Admin KERIPIK KITA!\nSaya mau memesan produk Keripik Premium khusus usia 21+.\n\n`;
+            text += `*--- DATA PEMESANAN ---*\n`;
+            text += `👤 *Nama:* ${name}\n`;
+            text += `📍 *Alamat Kirim:* ${address}\n`;
+            text += `🔒 *Status:* Terverifikasi Usia 21+ Tahun\n\n`;
+            text += `📦 *DAFTAR BELANJA:* \n`;
+
+            let grandTotal = 0;
+            cart.forEach((item, index) => {
+                const sub = item.price * item.qty;
+                grandTotal += sub;
+                text += `${index + 1}. *Menu:* ${item.name}\n   - *Qty:* ${item.qty} Pouch\n   - *Subtotal:* ${formatRupiah(sub)}\n`;
+            });
+
+            text += `\n💵 *TOTAL PEMBAYARAN:* ${formatRupiah(grandTotal)}\n\n`;
+            text += `---------------------------\n`;
+            text += `_"setiap ada usaha pasti ada jalannya - Sekali gigit Sikekk Aeyaaaa....."_\n`;
+
+            // Active WA Number
+            const phone = "6282249409581"; 
+            const waUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(text)}`;
+            
+            // Redirect to WhatsApp
+            window.open(waUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
+
+```
